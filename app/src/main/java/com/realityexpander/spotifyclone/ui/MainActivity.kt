@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 when (result.status) {
                     ERROR -> Snackbar.make(
                         rootLayout,
-                        result.message ?: "An unknown error occured",
+                        result.message ?: "An unknown error occurred",
                         Snackbar.LENGTH_LONG
                     ).show()
                     else -> Unit
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 when (result.status) {
                     ERROR -> Snackbar.make(
                         rootLayout,
-                        result.message ?: "An unknown error occured",
+                        result.message ?: "An unknown error occurred",
                         Snackbar.LENGTH_LONG
                     ).show()
                     else -> Unit
