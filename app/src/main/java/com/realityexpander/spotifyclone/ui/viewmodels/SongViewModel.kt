@@ -1,6 +1,5 @@
 package com.realityexpander.spotifyclone.ui.viewmodels
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,10 +8,14 @@ import com.realityexpander.spotifyclone.exoplayer.MusicService
 import com.realityexpander.spotifyclone.exoplayer.MusicServiceConnection
 import com.realityexpander.spotifyclone.exoplayer.currentPlaybackPosition
 import com.realityexpander.spotifyclone.other.Constants.UPDATE_PLAYER_POSITION_INTERVAL
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SongViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SongViewModel @Inject constructor(
     musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
 
