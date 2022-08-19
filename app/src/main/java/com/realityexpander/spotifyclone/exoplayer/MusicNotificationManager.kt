@@ -29,16 +29,14 @@ class MusicNotificationManager(
     private val notificationManager: PlayerNotificationManager
     private var cachedBitmap: Bitmap? = null
 
+
     init {
         // Set default cached bitmap
         cachedBitmap = BitmapFactory.decodeResource(
             context.resources,
-            R.drawable.ic_play
+            R.drawable.ic_music
         )
-    }
 
-
-    init {
         // to control the playback of music
         val mediaController = MediaControllerCompat(context, sessionToken)
 
