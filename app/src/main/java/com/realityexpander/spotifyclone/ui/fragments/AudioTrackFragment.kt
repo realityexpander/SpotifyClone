@@ -9,12 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
 import com.realityexpander.spotifyclone.R
-import com.realityexpander.spotifyclone.data.entities.Song
+import com.realityexpander.spotifyclone.data.entities.AudioTrack
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
-import com.realityexpander.spotifyclone.exoplayer.toSong
+import com.realityexpander.spotifyclone.exoplayer.toAudioTrack
 import com.realityexpander.spotifyclone.other.Status.SUCCESS
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
-import com.realityexpander.spotifyclone.ui.viewmodels.SongViewModel
+import com.realityexpander.spotifyclone.ui.viewmodels.AudioTrackViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_song.*
 import java.text.SimpleDateFormat
@@ -22,15 +22,15 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SongFragment : Fragment(R.layout.fragment_song) {
+class AudioTrackFragment : Fragment(R.layout.fragment_song) {
 
     @Inject
     lateinit var glide: RequestManager
 
     private lateinit var mainViewModel: MainViewModel
-    private val songViewModel: SongViewModel by viewModels()
+    private val audioTrackViewModel: AudioTrackViewModel by viewModels()
 
-    private var curPlayingSong: Song? = null
+    private var curPlayingAudioTrack: AudioTrack? = null
 
     private var playbackState: PlaybackStateCompat? = null
 
@@ -42,7 +42,7 @@ class SongFragment : Fragment(R.layout.fragment_song) {
         subscribeToObservers()
 
         ivPlayPauseDetail.setOnClickListener {
-            curPlayingSong?.let {
+            curPlayingAudioTrack?.let {
                 mainViewModel.playOrToggleSong(it, true)
             }
         }
@@ -75,10 +75,10 @@ class SongFragment : Fragment(R.layout.fragment_song) {
         }
     }
 
-    private fun updateTitleAndSongImage(song: Song) {
-        val title = "${song.title} - ${song.subtitle}"
+    private fun updateTitleAndSongImage(audioTrack: AudioTrack) {
+        val title = "${audioTrack.title} - ${audioTrack.subtitle}"
         tvSongName.text = title
-        glide.load(song.imageUrl).into(ivSongImage)
+        glide.load(audioTrack.imageUrl).into(ivSongImage)
     }
 
     private fun subscribeToObservers() {
@@ -86,10 +86,10 @@ class SongFragment : Fragment(R.layout.fragment_song) {
             it?.let { result ->
                 when(result.status) {
                     SUCCESS -> {
-                        result.data?.let { songs ->
-                            if(curPlayingSong == null && songs.isNotEmpty()) {
-                                curPlayingSong = songs[0]
-                                updateTitleAndSongImage(songs[0])
+                        result.data?.let { audioTracks ->
+                            if(curPlayingAudioTrack == null && audioTracks.isNotEmpty()) {
+                                curPlayingAudioTrack = audioTracks[0]
+                                updateTitleAndSongImage(audioTracks[0])
                             }
                         }
                     }
@@ -97,10 +97,10 @@ class SongFragment : Fragment(R.layout.fragment_song) {
                 }
             }
         }
-        mainViewModel.curPlayingSong.observe(viewLifecycleOwner) {
+        mainViewModel.curPlayingAudioTrack.observe(viewLifecycleOwner) {
             if(it == null) return@observe
-            curPlayingSong = it.toSong()
-            updateTitleAndSongImage(curPlayingSong!!)
+            curPlayingAudioTrack = it.toAudioTrack()
+            updateTitleAndSongImage(curPlayingAudioTrack!!)
         }
         mainViewModel.playbackState.observe(viewLifecycleOwner) {
             playbackState = it
@@ -112,13 +112,13 @@ class SongFragment : Fragment(R.layout.fragment_song) {
             )
             seekBar.progress = it?.position?.toInt() ?: 0
         }
-        songViewModel.curPlayerPosition.observe(viewLifecycleOwner) {
+        audioTrackViewModel.curPlayerPosition.observe(viewLifecycleOwner) {
             if(shouldUpdateSeekbar) {
                 seekBar.progress = it.toInt()
                 setCurPlayerTimeToTextView(it)
             }
         }
-        songViewModel.curSongDuration.observe(viewLifecycleOwner) {
+        audioTrackViewModel.curAudioTrackDuration.observe(viewLifecycleOwner) {
             seekBar.max = it.toInt()
             val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
             tvSongDuration.text = dateFormat.format(it)

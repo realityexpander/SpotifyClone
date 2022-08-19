@@ -46,9 +46,9 @@ class MusicService : MediaBrowserServiceCompat() {
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionConnector: MediaSessionConnector
 
-    var isForegroundService = false // is the service playing a song or not
+    var isForegroundService = false // is the service playing a audio track or not
 
-    private var curPlayingSong: MediaMetadataCompat? = null
+    private var curPlayingAudioTrack: MediaMetadataCompat? = null
 
     private var isPlayerInitialized = false
 
@@ -86,15 +86,18 @@ class MusicService : MediaBrowserServiceCompat() {
             mediaSession.sessionToken,
             MusicPlayerNotificationListener(this)
         ) {
-            // Called when the current song changes
+            // Called when the current audio track changes
             curSongDuration = exoPlayer.duration
         }
 
-        val musicPlaybackPreparer = MusicPlaybackPreparer(firebaseMusicSource) {
-            curPlayingSong = it
+
+        val musicPlaybackPreparer = MusicPlaybackPreparer(firebaseMusicSource) { audioTrack ->
+            // Called when the current audio track changes
+            curPlayingAudioTrack = audioTrack
+
             preparePlayer(
-                firebaseMusicSource.songs,
-                it,
+                firebaseMusicSource.audioTracks,
+                audioTrack,
                 true
             )
         }
@@ -113,19 +116,20 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-            return firebaseMusicSource.songs[windowIndex].description
+            return firebaseMusicSource.audioTracks[windowIndex].description
         }
     }
 
+    // Create the list of songs to be played for the exoPlayer
     private fun preparePlayer(
-        songs: List<MediaMetadataCompat>,
+        audioTracks: List<MediaMetadataCompat>,
         itemToPlay: MediaMetadataCompat?,
         playNow: Boolean
     ) {
-        val curSongIndex = if(curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
+        val curAudioTrackIndex = if(curPlayingAudioTrack == null) 0 else audioTracks.indexOf(itemToPlay)
 
         exoPlayer.prepare(firebaseMusicSource.asMediaSource(dataSourceFactory))
-        exoPlayer.seekTo(curSongIndex, 0L)
+        exoPlayer.seekTo(curAudioTrackIndex, 0L)
         exoPlayer.playWhenReady = playNow
     }
 
@@ -159,8 +163,8 @@ class MusicService : MediaBrowserServiceCompat() {
                 val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
                     if(isInitialized) {
                         result.sendResult(firebaseMusicSource.asMediaItems())
-                        if(!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()) {
-                            preparePlayer(firebaseMusicSource.songs, firebaseMusicSource.songs[0], false)
+                        if(!isPlayerInitialized && firebaseMusicSource.audioTracks.isNotEmpty()) {
+                            preparePlayer(firebaseMusicSource.audioTracks, firebaseMusicSource.audioTracks[0], false)
                             isPlayerInitialized = true
                         }
                     } else {

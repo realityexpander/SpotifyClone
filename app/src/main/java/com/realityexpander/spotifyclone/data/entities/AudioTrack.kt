@@ -1,6 +1,6 @@
 package com.realityexpander.spotifyclone.data.entities
 
-data class Song(
+data class AudioTrack(
     val mediaId: String = "",
     val title: String = "",
     val subtitle: String = "",

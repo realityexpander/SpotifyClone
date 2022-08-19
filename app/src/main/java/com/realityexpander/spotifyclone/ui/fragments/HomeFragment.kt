@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.realityexpander.spotifyclone.R
-import com.realityexpander.spotifyclone.adapters.SongAdapter
+import com.realityexpander.spotifyclone.adapters.AudioTrackAdapter
 import com.realityexpander.spotifyclone.other.Status
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +20,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     lateinit var mainViewModel: MainViewModel
 
     @Inject
-    lateinit var songAdapter: SongAdapter
+    lateinit var songAdapter: AudioTrackAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,8 +43,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             when(result.status) {
                 Status.SUCCESS -> {
                     allSongsProgressBar.isVisible = false
-                    result.data?.let { songs ->
-                        songAdapter.songs = songs
+                    result.data?.let { audioTracks ->
+                        songAdapter.audioTracks = audioTracks
                     }
                 }
                 Status.ERROR -> Unit

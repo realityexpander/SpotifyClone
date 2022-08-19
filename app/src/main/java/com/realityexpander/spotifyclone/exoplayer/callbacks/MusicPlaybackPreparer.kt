@@ -36,7 +36,7 @@ class MusicPlaybackPreparer(
 
         firebaseMusicSource.whenReady {
             val itemToPlay =
-                firebaseMusicSource.songs.find {
+                firebaseMusicSource.audioTracks.find {
                     mediaId == it.description.mediaId
                 }
 

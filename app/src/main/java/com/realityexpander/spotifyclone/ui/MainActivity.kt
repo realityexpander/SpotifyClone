@@ -10,10 +10,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.RequestManager
 import com.google.android.material.snackbar.Snackbar
 import com.realityexpander.spotifyclone.R
-import com.realityexpander.spotifyclone.adapters.SwipeSongAdapter
-import com.realityexpander.spotifyclone.data.entities.Song
+import com.realityexpander.spotifyclone.adapters.SwipeAudioTrackAdapter
+import com.realityexpander.spotifyclone.data.entities.AudioTrack
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
-import com.realityexpander.spotifyclone.exoplayer.toSong
+import com.realityexpander.spotifyclone.exoplayer.toAudioTrack
 import com.realityexpander.spotifyclone.other.Status.*
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,12 +32,12 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     @Inject
-    lateinit var swipeSongAdapter: SwipeSongAdapter
+    lateinit var swipeAudioTrackAdapter: SwipeAudioTrackAdapter
 
     @Inject
     lateinit var glide: RequestManager
 
-    private var curPlayingSong: Song? = null
+    private var curPlayingAudioTrack: AudioTrack? = null
 
     private var playbackState: PlaybackStateCompat? = null
 
@@ -46,27 +46,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         subscribeToObservers()
 
-        vpSong.adapter = swipeSongAdapter
+        vpSong.adapter = swipeAudioTrackAdapter
 
         vpSong.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
                 if(playbackState?.isPlaying == true) {
-                    mainViewModel.playOrToggleSong(swipeSongAdapter.songs[position])
+                    mainViewModel.playOrToggleSong(swipeAudioTrackAdapter.audioTracks[position])
                 } else {
-                    curPlayingSong = swipeSongAdapter.songs[position]
+                    curPlayingAudioTrack = swipeAudioTrackAdapter.audioTracks[position]
                 }
             }
         })
 
         ivPlayPause.setOnClickListener {
-            curPlayingSong?.let {
+            curPlayingAudioTrack?.let {
                 mainViewModel.playOrToggleSong(it, true)
             }
         }
 
-        swipeSongAdapter.setItemClickListener {
+        swipeAudioTrackAdapter.setItemClickListener {
             navHostFragment.findNavController().navigate(
                 R.id.globalActionToSongFragment
             )
@@ -93,11 +93,11 @@ class MainActivity : AppCompatActivity() {
         ivPlayPause.isVisible = true
     }
 
-    private fun switchViewPagerToCurrentSong(song: Song) {
-        val newItemIndex = swipeSongAdapter.songs.indexOf(song)
+    private fun switchViewPagerToCurrentSong(audioTrack: AudioTrack) {
+        val newItemIndex = swipeAudioTrackAdapter.audioTracks.indexOf(audioTrack)
         if (newItemIndex != -1) {
             vpSong.currentItem = newItemIndex
-            curPlayingSong = song
+            curPlayingAudioTrack = audioTrack
         }
     }
 
@@ -106,13 +106,13 @@ class MainActivity : AppCompatActivity() {
             it?.let { result ->
                 when (result.status) {
                     SUCCESS -> {
-                        result.data?.let { songs ->
-                            swipeSongAdapter.songs = songs
-                            if (songs.isNotEmpty()) {
-                                glide.load((curPlayingSong ?: songs[0]).imageUrl)
+                        result.data?.let { audioTracks ->
+                            swipeAudioTrackAdapter.audioTracks = audioTracks
+                            if (audioTracks.isNotEmpty()) {
+                                glide.load((curPlayingAudioTrack ?: audioTracks[0]).imageUrl)
                                     .into(ivCurSongImage)
                             }
-                            switchViewPagerToCurrentSong(curPlayingSong ?: return@observe)
+                            switchViewPagerToCurrentSong(curPlayingAudioTrack ?: return@observe)
                         }
                     }
                     ERROR -> Unit
@@ -120,12 +120,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        mainViewModel.curPlayingSong.observe(this) {
+        mainViewModel.curPlayingAudioTrack.observe(this) {
             if (it == null) return@observe
 
-            curPlayingSong = it.toSong()
-            glide.load(curPlayingSong?.imageUrl).into(ivCurSongImage)
-            switchViewPagerToCurrentSong(curPlayingSong ?: return@observe)
+            curPlayingAudioTrack = it.toAudioTrack()
+            glide.load(curPlayingAudioTrack?.imageUrl).into(ivCurSongImage)
+            switchViewPagerToCurrentSong(curPlayingAudioTrack ?: return@observe)
         }
         mainViewModel.playbackState.observe(this) {
             playbackState = it

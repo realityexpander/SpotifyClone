@@ -2,7 +2,7 @@ package com.realityexpander.spotifyclone.other
 
 object Constants {
 
-    const val SONG_COLLECTION = "songs"
+    const val AUDIO_TRACK_COLLECTION = "songs"
 
     const val MEDIA_ROOT_ID = "root_id"
 

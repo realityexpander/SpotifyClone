@@ -5,7 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.realityexpander.spotifyclone.R
-import com.realityexpander.spotifyclone.adapters.SwipeSongAdapter
+import com.realityexpander.spotifyclone.adapters.SwipeAudioTrackAdapter
 import com.realityexpander.spotifyclone.exoplayer.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
@@ -26,7 +26,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideSwipeSongAdapter() = SwipeSongAdapter()
+    fun provideSwipeAudioTrackAdapter() = SwipeAudioTrackAdapter()
 
     @Singleton
     @Provides

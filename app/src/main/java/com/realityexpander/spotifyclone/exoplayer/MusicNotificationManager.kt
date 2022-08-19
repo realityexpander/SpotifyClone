@@ -22,7 +22,7 @@ class MusicNotificationManager(
     private val context: Context,
     sessionToken: MediaSessionCompat.Token,
     notificationListener: PlayerNotificationManager.NotificationListener,
-    private val newSongCallback: () -> Unit
+    private val newAudioTrackCallback: () -> Unit
 ) {
 
     private val notificationManager: PlayerNotificationManager
@@ -67,9 +67,9 @@ class MusicNotificationManager(
         private val mediaController: MediaControllerCompat
     ) : PlayerNotificationManager.MediaDescriptionAdapter {
 
-        // title of the currently playing song
+        // title of the currently playing audio Track
         override fun getCurrentContentTitle(player: Player): CharSequence {
-            newSongCallback() // to update the time in the notification
+            newAudioTrackCallback() // to update the time in the notification
 
             return mediaController.metadata.description.title.toString()
         }
@@ -79,12 +79,12 @@ class MusicNotificationManager(
             return mediaController.sessionActivity
         }
 
-        // subtitle of the currently playing song
+        // subtitle of the currently playing audio track
         override fun getCurrentContentText(player: Player): CharSequence? {
             return mediaController.metadata.description.subtitle.toString()
         }
 
-        // album art of the currently playing song
+        // album art of the currently playing audio track
         override fun getCurrentLargeIcon(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback

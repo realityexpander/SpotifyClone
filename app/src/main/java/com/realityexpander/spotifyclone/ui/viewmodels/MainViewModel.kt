@@ -5,7 +5,7 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.realityexpander.spotifyclone.data.entities.Song
+import com.realityexpander.spotifyclone.data.entities.AudioTrack
 import com.realityexpander.spotifyclone.exoplayer.MusicServiceConnection
 import com.realityexpander.spotifyclone.exoplayer.isPlayEnabled
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
@@ -19,12 +19,12 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
-    private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
-    val mediaItems: LiveData<Resource<List<Song>>> = _mediaItems
+    private val _mediaItems = MutableLiveData<Resource<List<AudioTrack>>>()
+    val mediaItems: LiveData<Resource<List<AudioTrack>>> = _mediaItems
 
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
-    val curPlayingSong = musicServiceConnection.curPlayingSong
+    val curPlayingAudioTrack = musicServiceConnection.curPlayingSong
     val playbackState = musicServiceConnection.playbackState
 
     init {
@@ -37,7 +37,7 @@ class MainViewModel @Inject constructor(
             ) {
                 super.onChildrenLoaded(parentId, children)
                 val items = children.map {
-                    Song(
+                    AudioTrack(
                         it.mediaId!!,
                         it.description.title.toString(),
                         it.description.subtitle.toString(),
@@ -62,11 +62,11 @@ class MainViewModel @Inject constructor(
         musicServiceConnection.transportControls.seekTo(pos)
     }
 
-    fun playOrToggleSong(mediaItem: Song, toggle: Boolean = false) {
+    fun playOrToggleSong(mediaItem: AudioTrack, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
 
         if(isPrepared && mediaItem.mediaId ==
-            curPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
+            curPlayingAudioTrack.value?.getString(METADATA_KEY_MEDIA_ID)) {
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if(toggle) musicServiceConnection.transportControls.pause()

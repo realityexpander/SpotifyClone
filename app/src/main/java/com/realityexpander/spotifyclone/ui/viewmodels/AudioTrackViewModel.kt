@@ -14,14 +14,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SongViewModel @Inject constructor(
+class AudioTrackViewModel @Inject constructor(
     musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
 
     private val playbackState = musicServiceConnection.playbackState
 
     private val _curSongDuration = MutableLiveData<Long>()
-    val curSongDuration: LiveData<Long> = _curSongDuration
+    val curAudioTrackDuration: LiveData<Long> = _curSongDuration
 
     private val _curPlayerPosition = MutableLiveData<Long>()
     val curPlayerPosition: LiveData<Long> = _curPlayerPosition

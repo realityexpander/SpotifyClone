@@ -9,7 +9,7 @@
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/songFragment"
-        android:name="com.realityexpander.spotifyclone.ui.fragments.SongFragment"
+        android:name="com.realityexpander.spotifyclone.ui.fragments.AudioTrackFragment"
         android:label="SongFragment" />
 
     <action android:id="@+id/globalActionToSongFragment"

@@ -19,47 +19,47 @@ class FirebaseMusicSource @Inject constructor(
     private val musicDatabase: MusicDatabase  // Firebase FireStore Music Database
 ) {
 
-    var songs = emptyList<MediaMetadataCompat>()
+    var audioTracks = emptyList<MediaMetadataCompat>()
 
     suspend fun fetchMediaData() = withContext(Dispatchers.IO) {
         state = STATE_DOWNLOADING
 
-        // Get songs from Firebase
-        val (allSongs, isSuccessful) = musicDatabase.getAllSongs()
-        if (allSongs.isEmpty() && !isSuccessful) {
+        // Get audioTracks from Firebase
+        val (allAudioTracks, isSuccessful) = musicDatabase.getAllAudioTracks()
+        if (allAudioTracks.isEmpty() && !isSuccessful) {
             state = STATE_ERROR
             return@withContext
         }
 
-        // Convert songs metadata to MediaMetadataCompat
-        songs = allSongs.map { song ->
+        // Convert audioTrack metadata to MediaMetadataCompat
+        audioTracks = allAudioTracks.map { audioTrack ->
             MediaMetadataCompat.Builder()
-                .putString(METADATA_KEY_ARTIST, song.subtitle)
-                .putString(METADATA_KEY_MEDIA_ID, song.mediaId)
-                .putString(METADATA_KEY_TITLE, song.title)
-                .putString(METADATA_KEY_DISPLAY_TITLE, song.title)
-                .putString(METADATA_KEY_DISPLAY_ICON_URI, song.imageUrl)
-                .putString(METADATA_KEY_MEDIA_URI, song.songUrl)
-                .putString(METADATA_KEY_ALBUM_ART_URI, song.imageUrl)
-                .putString(METADATA_KEY_DISPLAY_SUBTITLE, song.subtitle)
-                .putString(METADATA_KEY_DISPLAY_DESCRIPTION, song.subtitle)
+                .putString(METADATA_KEY_ARTIST, audioTrack.subtitle)
+                .putString(METADATA_KEY_MEDIA_ID, audioTrack.mediaId)
+                .putString(METADATA_KEY_TITLE, audioTrack.title)
+                .putString(METADATA_KEY_DISPLAY_TITLE, audioTrack.title)
+                .putString(METADATA_KEY_DISPLAY_ICON_URI, audioTrack.imageUrl)
+                .putString(METADATA_KEY_MEDIA_URI, audioTrack.songUrl)
+                .putString(METADATA_KEY_ALBUM_ART_URI, audioTrack.imageUrl)
+                .putString(METADATA_KEY_DISPLAY_SUBTITLE, audioTrack.subtitle)
+                .putString(METADATA_KEY_DISPLAY_DESCRIPTION, audioTrack.subtitle)
                 .build()
         }
         state = STATE_READY_TO_PLAY
     }
 
-    // Define From where to stream the song
+    // Define From where to stream the audio track
     fun asMediaSource(dataSourceFactory: DefaultDataSourceFactory): ConcatenatingMediaSource {
         val concatenatingMediaSource =
             ConcatenatingMediaSource() // list of songs to play (one after another)
 
-        // Build the list of songs to play
-        songs.forEach { song ->
+        // Build the list of audio tracks to play
+        audioTracks.forEach { audioTrack ->
             val mediaSource =
                 ProgressiveMediaSource
                     .Factory(dataSourceFactory)
                     .createMediaSource(
-                        song.getString(METADATA_KEY_MEDIA_URI).toUri()
+                        audioTrack.getString(METADATA_KEY_MEDIA_URI).toUri()
                     )
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
@@ -68,14 +68,14 @@ class FirebaseMusicSource @Inject constructor(
 
     // Build browsable media items
     fun asMediaItems() =
-        songs.map { song ->
+        audioTracks.map { audioTrack ->
             val desc =
                 MediaDescriptionCompat.Builder()
-                    .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
-                    .setTitle(song.description.title)
-                    .setSubtitle(song.description.subtitle)
-                    .setMediaId(song.description.mediaId)
-                    .setIconUri(song.description.iconUri)
+                    .setMediaUri(audioTrack.getString(METADATA_KEY_MEDIA_URI).toUri())
+                    .setTitle(audioTrack.description.title)
+                    .setSubtitle(audioTrack.description.subtitle)
+                    .setMediaId(audioTrack.description.mediaId)
+                    .setIconUri(audioTrack.description.iconUri)
                     .build()
 
             MediaBrowserCompat.MediaItem(desc, FLAG_PLAYABLE)

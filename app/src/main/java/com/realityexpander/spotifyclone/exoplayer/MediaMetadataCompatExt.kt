@@ -1,11 +1,11 @@
 package com.realityexpander.spotifyclone.exoplayer
 
 import android.support.v4.media.MediaMetadataCompat
-import com.realityexpander.spotifyclone.data.entities.Song
+import com.realityexpander.spotifyclone.data.entities.AudioTrack
 
-fun MediaMetadataCompat.toSong(): Song? {
+fun MediaMetadataCompat.toAudioTrack(): AudioTrack? {
     return description?.let {
-        Song(
+        AudioTrack(
             it.mediaId ?: "",
             it.title.toString(),
             it.subtitle.toString(),
