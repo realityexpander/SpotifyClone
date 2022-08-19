@@ -1,12 +1,15 @@
 package com.realityexpander.spotifyclone.exoplayer
 
+import android.app.Notification.BADGE_ICON_LARGE
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.RequiresApi
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -51,6 +54,12 @@ class MusicNotificationManager(
         ).apply {
             setSmallIcon(R.drawable.ic_music)
             setMediaSessionToken(sessionToken)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                setBadgeIconType(BADGE_ICON_LARGE)
+            }
+            setUseStopAction(true)        // show stop only if setUseNavigationActions is false
+            setUseChronometer(true)       // unknown
+            setUseNavigationActions(true) // skip to previous and next
         }
     }
 
