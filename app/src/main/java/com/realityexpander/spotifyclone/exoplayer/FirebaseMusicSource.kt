@@ -16,14 +16,22 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FirebaseMusicSource @Inject constructor(
-    private val musicDatabase: MusicDatabase
-){
+    private val musicDatabase: MusicDatabase  // Firebase FireStore Music Database
+) {
 
     var songs = emptyList<MediaMetadataCompat>()
 
     suspend fun fetchMediaData() = withContext(Dispatchers.IO) {
-        state = STATE_INITIALIZING
-        val allSongs = musicDatabase.getAllSongs()
+        state = STATE_DOWNLOADING
+
+        // Get songs from Firebase
+        val (allSongs, isSuccessful) = musicDatabase.getAllSongs()
+        if (allSongs.isEmpty() && !isSuccessful) {
+            state = STATE_ERROR
+            return@withContext
+        }
+
+        // Convert songs metadata to MediaMetadataCompat
         songs = allSongs.map { song ->
             MediaMetadataCompat.Builder()
                 .putString(METADATA_KEY_ARTIST, song.subtitle)
@@ -37,39 +45,52 @@ class FirebaseMusicSource @Inject constructor(
                 .putString(METADATA_KEY_DISPLAY_DESCRIPTION, song.subtitle)
                 .build()
         }
-        state = STATE_INITIALIZED
+        state = STATE_READY_TO_PLAY
     }
 
+    // Define From where to stream the song
     fun asMediaSource(dataSourceFactory: DefaultDataSourceFactory): ConcatenatingMediaSource {
-        val concatenatingMediaSource = ConcatenatingMediaSource()
+        val concatenatingMediaSource =
+            ConcatenatingMediaSource() // list of songs to play (one after another)
+
+        // Build the list of songs to play
         songs.forEach { song ->
-            val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(song.getString(METADATA_KEY_MEDIA_URI).toUri())
+            val mediaSource =
+                ProgressiveMediaSource
+                    .Factory(dataSourceFactory)
+                    .createMediaSource(
+                        song.getString(METADATA_KEY_MEDIA_URI).toUri()
+                    )
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
         return concatenatingMediaSource
     }
 
-    fun asMediaItems() = songs.map { song ->
-        val desc = MediaDescriptionCompat.Builder()
-            .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
-            .setTitle(song.description.title)
-            .setSubtitle(song.description.subtitle)
-            .setMediaId(song.description.mediaId)
-            .setIconUri(song.description.iconUri)
-            .build()
-        MediaBrowserCompat.MediaItem(desc, FLAG_PLAYABLE)
-    }.toMutableList()
+    // Build browsable media items
+    fun asMediaItems() =
+        songs.map { song ->
+            val desc =
+                MediaDescriptionCompat.Builder()
+                    .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
+                    .setTitle(song.description.title)
+                    .setSubtitle(song.description.subtitle)
+                    .setMediaId(song.description.mediaId)
+                    .setIconUri(song.description.iconUri)
+                    .build()
 
+            MediaBrowserCompat.MediaItem(desc, FLAG_PLAYABLE)
+        }.toMutableList()
+
+    // List of lambda functions to run on each state change
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
 
-    private var state: State = STATE_CREATED
+    private var state: State = STATE_INITIAL
         set(value) {
-            if(value == STATE_INITIALIZED || value == STATE_ERROR) {
+            if (value == STATE_READY_TO_PLAY || value == STATE_ERROR) {
                 synchronized(onReadyListeners) {
                     field = value
                     onReadyListeners.forEach { listener ->
-                        listener(state == STATE_INITIALIZED)
+                        listener(state == STATE_READY_TO_PLAY)
                     }
                 }
             } else {
@@ -78,20 +99,20 @@ class FirebaseMusicSource @Inject constructor(
         }
 
     fun whenReady(action: (Boolean) -> Unit): Boolean {
-        if(state == STATE_CREATED || state == STATE_INITIALIZING) {
+        if (state == STATE_INITIAL || state == STATE_DOWNLOADING) {
             onReadyListeners += action
             return false
         } else {
-            action(state == STATE_INITIALIZED)
+            action(state == STATE_READY_TO_PLAY)
             return true
         }
     }
 }
 
 enum class State {
-    STATE_CREATED,
-    STATE_INITIALIZING,
-    STATE_INITIALIZED,
+    STATE_INITIAL,       // initial state (CREATED)
+    STATE_DOWNLOADING,  // downloading from the firebase database (INITIALIZING)
+    STATE_READY_TO_PLAY,   // successfully downloaded from the firebase database, ready to play (INITIALIZED)
     STATE_ERROR
 }
 

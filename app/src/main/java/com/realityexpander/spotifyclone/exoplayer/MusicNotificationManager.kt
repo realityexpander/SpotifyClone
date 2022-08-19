@@ -25,15 +25,17 @@ class MusicNotificationManager(
     private val notificationManager: PlayerNotificationManager
 
     init {
+        // to control the playback of music
         val mediaController = MediaControllerCompat(context, sessionToken)
+
         notificationManager = PlayerNotificationManager.createWithNotificationChannel(
             context,
             NOTIFICATION_CHANNEL_ID,
             R.string.notification_channel_name,
             R.string.notification_channel_description,
             NOTIFICATION_ID,
-            DescriptionAdapter(mediaController),
-            notificationListener
+            DescriptionAdapter(mediaController),  // Custom description adapter for song info
+            notificationListener  // to listen for actions including swipe to dismiss
         ).apply {
             setSmallIcon(R.drawable.ic_music)
             setMediaSessionToken(sessionToken)
@@ -48,25 +50,31 @@ class MusicNotificationManager(
         private val mediaController: MediaControllerCompat
     ) : PlayerNotificationManager.MediaDescriptionAdapter {
 
+        // title of the currently playing song
         override fun getCurrentContentTitle(player: Player): CharSequence {
-            newSongCallback()
+            newSongCallback() // to update the time in the notification
+
             return mediaController.metadata.description.title.toString()
         }
 
+        // Return the pending intent that leads to our app's main activity
         override fun createCurrentContentIntent(player: Player): PendingIntent? {
             return mediaController.sessionActivity
         }
 
+        // subtitle of the currently playing song
         override fun getCurrentContentText(player: Player): CharSequence? {
             return mediaController.metadata.description.subtitle.toString()
         }
 
+        // album art of the currently playing song
         override fun getCurrentLargeIcon(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback
         ): Bitmap? {
+            // use glide to load the album art uri and convert to bitmap
             Glide.with(context).asBitmap()
-                .load(mediaController.metadata.description.iconUri)
+                .load(mediaController.metadata.description.iconUri) // from MediaDescriptionCompat.Builder().setIconUri(song.description.iconUri)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(
                         resource: Bitmap,
@@ -77,7 +85,8 @@ class MusicNotificationManager(
 
                     override fun onLoadCleared(placeholder: Drawable?) = Unit
                 })
-            return null
+
+            return null // return null because we are using the callback to set the bitmap
         }
     }
 }

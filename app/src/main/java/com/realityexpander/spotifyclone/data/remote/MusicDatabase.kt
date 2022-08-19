@@ -10,14 +10,16 @@ class MusicDatabase {
     private val firestore = FirebaseFirestore.getInstance()
     private val songCollection = firestore.collection(SONG_COLLECTION)
 
-    suspend fun getAllSongs(): List<Song> {
+    suspend fun getAllSongs(): Pair<List<Song>, Boolean> {  // Pair<List<Song>, isSuccessful>
         return try {
-            songCollection
-                .get()
-                .await()
-                .toObjects(Song::class.java)
+            Pair(songCollection
+                    .get()
+                    .await()
+                    .toObjects(Song::class.java),
+                true)
         } catch(e: Exception) {
-            emptyList()
+            e.printStackTrace()
+           Pair(emptyList(), false)  // failed to load songs
         }
     }
 }

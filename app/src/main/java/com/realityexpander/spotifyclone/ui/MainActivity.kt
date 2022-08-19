@@ -20,6 +20,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
+// Firebase Dashboard:
+// Database: https://console.cloud.google.com/firestore/data/songs/test_song6?authuser=0&project=spotifyclone-d1f1c
+// storage: https://console.firebase.google.com/u/0/project/spotifyclone-d1f1c/storage/spotifyclone-d1f1c.appspot.com/files
+
+// Music source: https://freemusicarchive.org/genre/New_Age/
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -45,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         vpSong.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+
                 if(playbackState?.isPlaying == true) {
                     mainViewModel.playOrToggleSong(swipeSongAdapter.songs[position])
                 } else {

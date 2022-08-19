@@ -38,13 +38,15 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private lateinit var musicNotificationManager: MusicNotificationManager
 
+    // Music Service background processing job
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
+    // Tracks the current session for the playing of the media (audio)
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var mediaSessionConnector: MediaSessionConnector
 
-    var isForegroundService = false
+    var isForegroundService = false // is the service playing a song or not
 
     private var curPlayingSong: MediaMetadataCompat? = null
 
@@ -63,22 +65,28 @@ class MusicService : MediaBrowserServiceCompat() {
             firebaseMusicSource.fetchMediaData()
         }
 
-        val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
+        // Pending intent to open up this app from notification
+        val activityIntent =
+            packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, 0)
         }
+
 
         mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {
             setSessionActivity(activityIntent)
             isActive = true
         }
 
+        // Set the MediaBrowserServiceCompat.Token for the MediaSessionCompat
         sessionToken = mediaSession.sessionToken
 
+        // Create the notification for player
         musicNotificationManager = MusicNotificationManager(
             this,
             mediaSession.sessionToken,
             MusicPlayerNotificationListener(this)
         ) {
+            // Called when the current song changes
             curSongDuration = exoPlayer.duration
         }
 
@@ -98,6 +106,8 @@ class MusicService : MediaBrowserServiceCompat() {
 
         musicPlayerEventListener = MusicPlayerEventListener(this)
         exoPlayer.addListener(musicPlayerEventListener)
+
+        // Show notification when music is playing
         musicNotificationManager.showNotification(exoPlayer)
     }
 
@@ -113,6 +123,7 @@ class MusicService : MediaBrowserServiceCompat() {
         playNow: Boolean
     ) {
         val curSongIndex = if(curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
+
         exoPlayer.prepare(firebaseMusicSource.asMediaSource(dataSourceFactory))
         exoPlayer.seekTo(curSongIndex, 0L)
         exoPlayer.playWhenReady = playNow

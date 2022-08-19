@@ -11,6 +11,7 @@ class MusicPlayerEventListener(
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         super.onPlayerStateChanged(playWhenReady, playbackState)
+
         if(playbackState == Player.STATE_READY && !playWhenReady) {
             musicService.stopForeground(false)
         }
@@ -18,6 +19,7 @@ class MusicPlayerEventListener(
 
     override fun onPlayerError(error: ExoPlaybackException) {
         super.onPlayerError(error)
-        Toast.makeText(musicService, "An unknown error occured", Toast.LENGTH_LONG).show()
+
+        Toast.makeText(musicService, "An unknown error occurred", Toast.LENGTH_LONG).show()
     }
 }

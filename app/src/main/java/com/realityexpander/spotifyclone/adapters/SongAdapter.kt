@@ -14,6 +14,7 @@ class SongAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
+
         holder.itemView.apply {
             tvPrimary.text = song.title
             tvSecondary.text = song.subtitle

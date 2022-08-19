@@ -10,6 +10,7 @@ class SwipeSongAdapter : BaseSongAdapter(R.layout.swipe_item) {
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
+
         holder.itemView.apply {
             val text = "${song.title} - ${song.subtitle}"
             tvPrimary.text = text
