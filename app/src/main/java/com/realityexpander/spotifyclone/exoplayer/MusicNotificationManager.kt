@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import androidx.annotation.RequiresApi
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -18,9 +17,6 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.realityexpander.spotifyclone.R
 import com.realityexpander.spotifyclone.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.realityexpander.spotifyclone.other.Constants.NOTIFICATION_ID
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class MusicNotificationManager(
     private val context: Context,
