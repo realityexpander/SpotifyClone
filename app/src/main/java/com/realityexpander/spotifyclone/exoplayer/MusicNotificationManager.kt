@@ -3,6 +3,7 @@ package com.realityexpander.spotifyclone.exoplayer
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -14,6 +15,9 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.realityexpander.spotifyclone.R
 import com.realityexpander.spotifyclone.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.realityexpander.spotifyclone.other.Constants.NOTIFICATION_ID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class MusicNotificationManager(
     private val context: Context,
@@ -23,6 +27,13 @@ class MusicNotificationManager(
 ) {
 
     private val notificationManager: PlayerNotificationManager
+    private var cachedBitmap: Bitmap? = null
+
+    init {
+        cachedBitmap = BitmapFactory.decodeResource(context.resources,
+            R.drawable.ic_play)
+    }
+
 
     init {
         // to control the playback of music
@@ -72,6 +83,7 @@ class MusicNotificationManager(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback
         ): Bitmap? {
+
             // use glide to load the album art uri and convert to bitmap
             Glide.with(context).asBitmap()
                 .load(mediaController.metadata.description.iconUri) // from MediaDescriptionCompat.Builder().setIconUri(song.description.iconUri)
@@ -80,13 +92,14 @@ class MusicNotificationManager(
                         resource: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
+                        cachedBitmap = resource
                         callback.onBitmap(resource)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) = Unit
                 })
 
-            return null // return null because we are using the callback to set the bitmap
+            return cachedBitmap // return cached bitmap if available
         }
     }
 }

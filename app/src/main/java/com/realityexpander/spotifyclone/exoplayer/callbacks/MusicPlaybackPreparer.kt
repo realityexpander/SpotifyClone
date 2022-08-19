@@ -23,23 +23,28 @@ class MusicPlaybackPreparer(
         cb: ResultReceiver?
     ) = false
 
+    // Return the types of actions that this class supports.
     override fun getSupportedPrepareActions(): Long {
-        return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
+        return PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or  // these are bit flags
                 PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
     }
 
     override fun onPrepare(playWhenReady: Boolean) = Unit
 
+    // After the media is prepared(loaded), get the player ready to play the media (song).
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+
         firebaseMusicSource.whenReady {
             val itemToPlay =
                 firebaseMusicSource.songs.find {
                     mediaId == it.description.mediaId
                 }
+
             playerPrepared(itemToPlay)
         }
     }
 
+    // for google voice search
     override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) = Unit
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) = Unit

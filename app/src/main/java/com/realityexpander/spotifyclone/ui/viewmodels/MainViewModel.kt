@@ -29,6 +29,7 @@ class MainViewModel @Inject constructor(
 
     init {
         _mediaItems.postValue(Resource.loading(null))
+
         musicServiceConnection.subscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {
             override fun onChildrenLoaded(
                 parentId: String,
@@ -63,6 +64,7 @@ class MainViewModel @Inject constructor(
 
     fun playOrToggleSong(mediaItem: Song, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
+
         if(isPrepared && mediaItem.mediaId ==
             curPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
             playbackState.value?.let { playbackState ->

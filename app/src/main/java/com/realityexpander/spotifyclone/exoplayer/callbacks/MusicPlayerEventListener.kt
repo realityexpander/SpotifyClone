@@ -7,7 +7,9 @@ import com.realityexpander.spotifyclone.exoplayer.MusicService
 
 class MusicPlayerEventListener(
     private val musicService: MusicService
-) : Player.EventListener {
+) : Player.EventListener {  // deprecated use Player.Listener instead
+
+    // Use onPlaybackStateChanged(int) and onPlayWhenReadyChanged(boolean, int) instead.
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         super.onPlayerStateChanged(playWhenReady, playbackState)
