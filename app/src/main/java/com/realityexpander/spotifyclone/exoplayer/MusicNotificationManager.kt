@@ -30,8 +30,11 @@ class MusicNotificationManager(
     private var cachedBitmap: Bitmap? = null
 
     init {
-        cachedBitmap = BitmapFactory.decodeResource(context.resources,
-            R.drawable.ic_play)
+        // Set default cached bitmap
+        cachedBitmap = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.ic_play
+        )
     }
 
 
