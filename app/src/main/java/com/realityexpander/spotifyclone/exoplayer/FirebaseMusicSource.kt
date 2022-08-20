@@ -102,9 +102,11 @@ class FirebaseMusicSource @Inject constructor(
     fun whenReady(action: (Boolean) -> Unit): Boolean {
         if (state == STATE_INITIAL || state == STATE_DOWNLOADING) {
             onReadyListeners += action
+
             return false
         } else {
             action(state == STATE_READY_TO_PLAY)
+
             return true
         }
     }

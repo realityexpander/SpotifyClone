@@ -55,12 +55,14 @@ class MusicService : MediaBrowserServiceCompat() {
     private lateinit var musicPlayerEventListener: MusicPlayerEventListener
 
     companion object {
-        var curSongDuration = 0L
+        var curSongDuration = 0L  // milliseconds
             private set
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        // Fetch the audio track data from the Firebase database
         serviceScope.launch {
             firebaseMusicSource.fetchMediaData()
         }
@@ -87,7 +89,7 @@ class MusicService : MediaBrowserServiceCompat() {
             MusicPlayerNotificationListener(this)
         ) {
             // Called when the current audio track changes
-            curSongDuration = exoPlayer.duration
+            curSongDuration = exoPlayer.duration  // milliseconds
         }
 
 
@@ -116,7 +118,10 @@ class MusicService : MediaBrowserServiceCompat() {
         musicNotificationManager.showNotification(exoPlayer)
     }
 
+    // Used to get media description for the an audio track (when track changes), also intercept to player events
     private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
+
+        // windowIndex is the index of the track that is now playing
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
             return firebaseMusicSource.audioTracks[windowIndex].description
         }
@@ -142,6 +147,7 @@ class MusicService : MediaBrowserServiceCompat() {
         exoPlayer.playWhenReady = playNow
     }
 
+    // When the user stops the app (from the task manager) the player is stopped
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         exoPlayer.stop()
@@ -155,6 +161,7 @@ class MusicService : MediaBrowserServiceCompat() {
         exoPlayer.release()
     }
 
+    // Gets the root of the browser tree (the media library)
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
@@ -165,26 +172,32 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onLoadChildren(
         parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>  // playable audio track or list of audio tracks
     ) {
         when (parentId) {
             MEDIA_ROOT_ID -> {
-                val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
-                    if (isInitialized) {
-                        result.sendResult(firebaseMusicSource.asMediaItems())
+                val resultsSent = firebaseMusicSource.whenReady { isTracksDownloaded ->
+                    if (isTracksDownloaded) {
+                        result.sendResult(firebaseMusicSource.asMediaItems())  // send the list of audio tracks
+
                         if (!isPlayerInitialized && firebaseMusicSource.audioTracks.isNotEmpty()) {
+
+                            // Set the track to play first
                             preparePlayer(
                                 firebaseMusicSource.audioTracks,
                                 firebaseMusicSource.audioTracks[0],
                                 false
                             )
+
                             isPlayerInitialized = true
                         }
                     } else {
                         mediaSession.sendSessionEvent(NETWORK_ERROR, null)
+
                         result.sendResult(null)
                     }
                 }
+
                 if (!resultsSent) {
                     result.detach()
                 }

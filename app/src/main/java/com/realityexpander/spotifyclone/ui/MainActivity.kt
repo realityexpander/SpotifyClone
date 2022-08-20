@@ -120,6 +120,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         mainViewModel.curPlayingAudioTrack.observe(this) {
             if (it == null) return@observe
 
@@ -127,12 +128,14 @@ class MainActivity : AppCompatActivity() {
             glide.load(curPlayingAudioTrack?.imageUrl).into(ivCurSongImage)
             switchViewPagerToCurrentSong(curPlayingAudioTrack ?: return@observe)
         }
+
         mainViewModel.playbackState.observe(this) {
             playbackState = it
             ivPlayPause.setImageResource(
                 if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
             )
         }
+
         mainViewModel.isConnected.observe(this) {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
@@ -145,6 +148,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         mainViewModel.networkError.observe(this) {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
