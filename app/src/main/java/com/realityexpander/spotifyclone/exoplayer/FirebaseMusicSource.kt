@@ -63,6 +63,7 @@ class FirebaseMusicSource @Inject constructor(
                     )
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
+
         return concatenatingMediaSource
     }
 

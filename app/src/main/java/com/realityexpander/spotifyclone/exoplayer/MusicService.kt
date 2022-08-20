@@ -68,8 +68,8 @@ class MusicService : MediaBrowserServiceCompat() {
         // Pending intent to open up this app from notification
         val activityIntent =
             packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
-        }
+                PendingIntent.getActivity(this, 0, it, 0)
+            }
 
 
         mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {
@@ -91,6 +91,7 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
 
+        // set the track to play first
         val musicPlaybackPreparer = MusicPlaybackPreparer(firebaseMusicSource) { audioTrack ->
             // Called when the current audio track changes
             curPlayingAudioTrack = audioTrack
@@ -107,10 +108,11 @@ class MusicService : MediaBrowserServiceCompat() {
         mediaSessionConnector.setQueueNavigator(MusicQueueNavigator())
         mediaSessionConnector.setPlayer(exoPlayer)
 
+        // Listen to player state changes and errors
         musicPlayerEventListener = MusicPlayerEventListener(this)
         exoPlayer.addListener(musicPlayerEventListener)
 
-        // Show notification when music is playing
+        // Show notification for control of the player
         musicNotificationManager.showNotification(exoPlayer)
     }
 
@@ -126,9 +128,16 @@ class MusicService : MediaBrowserServiceCompat() {
         itemToPlay: MediaMetadataCompat?,
         playNow: Boolean
     ) {
-        val curAudioTrackIndex = if(curPlayingAudioTrack == null) 0 else audioTracks.indexOf(itemToPlay)
+        val curAudioTrackIndex =
+            if (curPlayingAudioTrack == null)
+                0
+            else
+                audioTracks.indexOf(itemToPlay)
 
+        // Convert the list of songs to a list of MediaMetadataCompat objects
         exoPlayer.prepare(firebaseMusicSource.asMediaSource(dataSourceFactory))
+
+        // Set the seek to the start of the audio track
         exoPlayer.seekTo(curAudioTrackIndex, 0L)
         exoPlayer.playWhenReady = playNow
     }
@@ -158,13 +167,17 @@ class MusicService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        when(parentId) {
+        when (parentId) {
             MEDIA_ROOT_ID -> {
                 val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
-                    if(isInitialized) {
+                    if (isInitialized) {
                         result.sendResult(firebaseMusicSource.asMediaItems())
-                        if(!isPlayerInitialized && firebaseMusicSource.audioTracks.isNotEmpty()) {
-                            preparePlayer(firebaseMusicSource.audioTracks, firebaseMusicSource.audioTracks[0], false)
+                        if (!isPlayerInitialized && firebaseMusicSource.audioTracks.isNotEmpty()) {
+                            preparePlayer(
+                                firebaseMusicSource.audioTracks,
+                                firebaseMusicSource.audioTracks[0],
+                                false
+                            )
                             isPlayerInitialized = true
                         }
                     } else {
@@ -172,7 +185,7 @@ class MusicService : MediaBrowserServiceCompat() {
                         result.sendResult(null)
                     }
                 }
-                if(!resultsSent) {
+                if (!resultsSent) {
                     result.detach()
                 }
             }

@@ -47,7 +47,7 @@ object ServiceModule {
     @Provides
     fun provideDataSourceFactory(
         @ApplicationContext context: Context
-    ) = DefaultDataSourceFactory(context, Util.getUserAgent(context, "SpotifyClone App"))
+    ): DefaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "SpotifyClone App"))
 }
 
 
