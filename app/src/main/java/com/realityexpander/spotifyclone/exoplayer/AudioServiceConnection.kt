@@ -15,7 +15,7 @@ import com.realityexpander.spotifyclone.common.Event
 import com.realityexpander.spotifyclone.common.Resource
 
 // Sits between fragment/activity and the MusicService
-class MusicServiceConnection(
+class AudioServiceConnection(
     context: Context
 ) {
 
@@ -42,7 +42,7 @@ class MusicServiceConnection(
             context,
             ComponentName(
                 context,
-                MusicService::class.java
+                AudioService::class.java
             ),
             mediaBrowserConnectionCallback,
             null

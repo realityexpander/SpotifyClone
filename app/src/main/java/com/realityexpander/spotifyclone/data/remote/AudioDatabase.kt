@@ -5,7 +5,7 @@ import com.realityexpander.spotifyclone.data.entities.AudioTrack
 import com.realityexpander.spotifyclone.common.Constants.AUDIO_TRACK_COLLECTION
 import kotlinx.coroutines.tasks.await
 
-class MusicDatabase {
+class AudioDatabase {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val audioTrackCollection = firestore.collection(AUDIO_TRACK_COLLECTION)

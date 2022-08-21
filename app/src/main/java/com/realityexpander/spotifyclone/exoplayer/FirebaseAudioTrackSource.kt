@@ -9,14 +9,14 @@ import androidx.core.net.toUri
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.realityexpander.spotifyclone.data.remote.MusicDatabase
+import com.realityexpander.spotifyclone.data.remote.AudioDatabase
 import com.realityexpander.spotifyclone.exoplayer.State.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FirebaseMusicSource @Inject constructor(
-    private val musicDatabase: MusicDatabase  // Firebase FireStore Music Database
+    private val audioDatabase: AudioDatabase  // Firebase FireStore Music Database
 ) {
 
     var audioTracks = emptyList<MediaMetadataCompat>()
@@ -25,7 +25,7 @@ class FirebaseMusicSource @Inject constructor(
         state = STATE_DOWNLOADING
 
         // Get audioTracks from Firebase
-        val (allAudioTracks, isSuccessful) = musicDatabase.getAllAudioTracks()
+        val (allAudioTracks, isSuccessful) = audioDatabase.getAllAudioTracks()
         if (allAudioTracks.isEmpty() && !isSuccessful) {
             state = STATE_ERROR
             return@withContext

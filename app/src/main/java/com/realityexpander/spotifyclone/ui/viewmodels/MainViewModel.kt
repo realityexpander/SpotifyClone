@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.realityexpander.spotifyclone.data.entities.AudioTrack
-import com.realityexpander.spotifyclone.exoplayer.MusicServiceConnection
+import com.realityexpander.spotifyclone.exoplayer.AudioServiceConnection
 import com.realityexpander.spotifyclone.exoplayer.isPlayEnabled
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
 import com.realityexpander.spotifyclone.exoplayer.isPrepared
@@ -17,23 +17,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val musicServiceConnection: MusicServiceConnection
+    private val audioServiceConnection: AudioServiceConnection
 ) : ViewModel() {
 
     private val _audioTracks = MutableLiveData<Resource<List<AudioTrack>>>()
     val audioTracks: LiveData<Resource<List<AudioTrack>>> = _audioTracks
 
     // Make local shortcuts for easier readability
-    val isConnected = musicServiceConnection.isConnected
-    val networkError = musicServiceConnection.networkError
-    val curPlayingAudioTrack = musicServiceConnection.curPlayingSong
-    val playbackState = musicServiceConnection.playbackState
+    val isConnected = audioServiceConnection.isConnected
+    val networkError = audioServiceConnection.networkError
+    val curPlayingAudioTrack = audioServiceConnection.curPlayingSong
+    val playbackState = audioServiceConnection.playbackState
 
     init {
         // Indicate that media is loading
         _audioTracks.postValue(Resource.loading(null))
 
-        musicServiceConnection.subscribe(
+        audioServiceConnection.subscribe(
             MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {
 
@@ -60,15 +60,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun skipToNextAudioTrack() {
-        musicServiceConnection.transportControls.skipToNext()
+        audioServiceConnection.transportControls.skipToNext()
     }
 
     fun skipToPreviousAudioTrack() {
-        musicServiceConnection.transportControls.skipToPrevious()
+        audioServiceConnection.transportControls.skipToPrevious()
     }
 
     fun seekTo(pos: Long) {
-        musicServiceConnection.transportControls.seekTo(pos)
+        audioServiceConnection.transportControls.seekTo(pos)
     }
 
     // Start playing if not playing, and toggle if playing/paused
@@ -82,21 +82,21 @@ class MainViewModel @Inject constructor(
 
             playbackState.value?.let { playbackState ->
                 when {
-                    playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()
-                    playbackState.isPlayEnabled -> musicServiceConnection.transportControls.play()
+                    playbackState.isPlaying -> if (toggle) audioServiceConnection.transportControls.pause()
+                    playbackState.isPlayEnabled -> audioServiceConnection.transportControls.play()
                     else -> Unit
                 }
             }
         } else {
             // Play a new audio track
-            musicServiceConnection.transportControls.playFromMediaId(audioTrack.mediaId, null)
+            audioServiceConnection.transportControls.playFromMediaId(audioTrack.mediaId, null)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
 
-        musicServiceConnection.unsubscribe(
+        audioServiceConnection.unsubscribe(
             MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {}
         )

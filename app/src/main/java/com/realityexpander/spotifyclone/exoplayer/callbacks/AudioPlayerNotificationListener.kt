@@ -4,18 +4,18 @@ import android.app.Notification
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
-import com.realityexpander.spotifyclone.exoplayer.MusicService
+import com.realityexpander.spotifyclone.exoplayer.AudioService
 import com.realityexpander.spotifyclone.common.Constants.NOTIFICATION_ID
 
-class MusicPlayerNotificationListener(
-    private val musicService: MusicService
+class AudioPlayerNotificationListener(
+    private val audioService: AudioService
 ) : PlayerNotificationManager.NotificationListener {
 
     // When user swipes the notification away, the service is stopped.
     override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
         super.onNotificationCancelled(notificationId, dismissedByUser)
 
-        musicService.apply {
+        audioService.apply {
             stopForeground(true)  // clear the notification
             isForegroundService = false
             stopSelf()
@@ -30,7 +30,7 @@ class MusicPlayerNotificationListener(
     ) {
         super.onNotificationPosted(notificationId, notification, ongoing)
 
-        musicService.apply {
+        audioService.apply {
             if(ongoing && !isForegroundService) {
                 // start the foreground service
                 ContextCompat.startForegroundService(

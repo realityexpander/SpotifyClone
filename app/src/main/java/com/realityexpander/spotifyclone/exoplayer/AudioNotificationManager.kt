@@ -18,7 +18,7 @@ import com.realityexpander.spotifyclone.R
 import com.realityexpander.spotifyclone.common.Constants.NOTIFICATION_CHANNEL_ID
 import com.realityexpander.spotifyclone.common.Constants.NOTIFICATION_ID
 
-class MusicNotificationManager(
+class AudioNotificationManager(
     private val context: Context,
     sessionToken: MediaSessionCompat.Token,
     notificationListener: PlayerNotificationManager.NotificationListener,

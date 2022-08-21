@@ -44,21 +44,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         subscribeToObservers()
 
-        vpSong.adapter = swipeAudioTrackAdapter
+        vpAudioTrack.adapter = swipeAudioTrackAdapter
 
-        vpSong.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
+        vpAudioTrack.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
 
-                if(playbackState?.isPlaying == true) {
-                    mainViewModel.playOrToggleAudioTrack(swipeAudioTrackAdapter.audioTracks[position])
-                } else {
-                    curPlayingAudioTrack = swipeAudioTrackAdapter.audioTracks[position]
+                    if (playbackState?.isPlaying == true) {
+                        mainViewModel.playOrToggleAudioTrack(swipeAudioTrackAdapter.audioTracks[position])
+                    } else {
+                        curPlayingAudioTrack = swipeAudioTrackAdapter.audioTracks[position]
+                    }
                 }
-            }
-        })
+            })
 
         ivPlayPause.setOnClickListener {
             curPlayingAudioTrack?.let {
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
-            when(destination.id) {
+            when (destination.id) {
                 R.id.songFragment -> hideBottomBar()
                 R.id.homeFragment -> showBottomBar()
                 else -> showBottomBar()
@@ -83,13 +85,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideBottomBar() {
         ivCurSongImage.isVisible = false
-        vpSong.isVisible = false
+        vpAudioTrack.isVisible = false
         ivPlayPause.isVisible = false
     }
 
     private fun showBottomBar() {
         ivCurSongImage.isVisible = true
-        vpSong.isVisible = true
+        vpAudioTrack.isVisible = true
         ivPlayPause.isVisible = true
     }
 
@@ -97,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         val newItemIndex = swipeAudioTrackAdapter.audioTracks.indexOf(audioTrack)
 
         if (newItemIndex != -1) { // -1 == not found
-            vpSong.currentItem = newItemIndex
+            vpAudioTrack.currentItem = newItemIndex
             curPlayingAudioTrack = audioTrack
         }
     }
@@ -130,19 +132,27 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.curPlayingAudioTrack.observe(this) {
             if (it == null) return@observe
 
-            curPlayingAudioTrack = it.toAudioTrack()
+            curPlayingAudioTrack = it.toAudioTrack()  // convert to domain model
             glide.load(curPlayingAudioTrack?.imageUrl).into(ivCurSongImage)
             switchViewPagerToCurrentSong(curPlayingAudioTrack ?: return@observe)
         }
 
+        // Everytime the playback state changes, this is called
         mainViewModel.playbackState.observe(this) {
             playbackState = it
+
             ivPlayPause.setImageResource(
-                if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
+                if (playbackState?.isPlaying == true)
+                    R.drawable.ic_pause
+                else
+                    R.drawable.ic_play
             )
         }
 
+        // Show the the MediaBrowser connection status
         mainViewModel.isConnected.observe(this) {
+
+            // Shows the message only once (should use channels instead)
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     ERROR -> Snackbar.make(
@@ -155,6 +165,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Show the network connection status (to the firebase server)
         mainViewModel.networkError.observe(this) {
             it?.getContentIfNotHandled()?.let { result ->
                 when (result.status) {

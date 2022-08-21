@@ -16,13 +16,13 @@ import com.realityexpander.spotifyclone.common.Status.SUCCESS
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
 import com.realityexpander.spotifyclone.ui.viewmodels.AudioTrackViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_song.*
+import kotlinx.android.synthetic.main.fragment_audio_track.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AudioTrackFragment : Fragment(R.layout.fragment_song) {
+class AudioTrackFragment : Fragment(R.layout.fragment_audio_track) {
 
     @Inject
     lateinit var glide: RequestManager

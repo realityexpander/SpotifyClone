@@ -7,7 +7,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.realityexpander.spotifyclone.R
 import com.realityexpander.spotifyclone.adapters.SwipeAudioTrackAdapter
-import com.realityexpander.spotifyclone.exoplayer.MusicServiceConnection
+import com.realityexpander.spotifyclone.exoplayer.AudioServiceConnection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +23,8 @@ object AppModule {
     @Provides
     fun provideMusicServiceConnection(
         @ApplicationContext context: Context
-    ): MusicServiceConnection =
-        MusicServiceConnection(context)
+    ): AudioServiceConnection =
+        AudioServiceConnection(context)
 
     @Singleton
     @Provides

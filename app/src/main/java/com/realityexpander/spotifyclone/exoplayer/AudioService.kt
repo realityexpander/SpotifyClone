@@ -13,9 +13,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.realityexpander.spotifyclone.exoplayer.callbacks.MusicPlaybackPreparer
-import com.realityexpander.spotifyclone.exoplayer.callbacks.MusicPlayerEventListener
-import com.realityexpander.spotifyclone.exoplayer.callbacks.MusicPlayerNotificationListener
+import com.realityexpander.spotifyclone.exoplayer.callbacks.AudioPlaybackPreparer
+import com.realityexpander.spotifyclone.exoplayer.callbacks.AudioPlayerEventListener
+import com.realityexpander.spotifyclone.exoplayer.callbacks.AudioPlayerNotificationListener
 import com.realityexpander.spotifyclone.common.Constants.MEDIA_ROOT_ID
 import com.realityexpander.spotifyclone.common.Constants.NETWORK_ERROR
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +25,7 @@ import javax.inject.Inject
 private const val SERVICE_TAG = "MusicService"
 
 @AndroidEntryPoint
-class MusicService : MediaBrowserServiceCompat() {
+class AudioService : MediaBrowserServiceCompat() {
 
     @Inject
     lateinit var dataSourceFactory: DefaultDataSourceFactory
@@ -36,7 +36,7 @@ class MusicService : MediaBrowserServiceCompat() {
     @Inject
     lateinit var firebaseMusicSource: FirebaseMusicSource
 
-    private lateinit var musicNotificationManager: MusicNotificationManager
+    private lateinit var audioNotificationManager: AudioNotificationManager
 
     // Music Service background processing job
     private val serviceJob = Job()
@@ -52,7 +52,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private var isPlayerInitialized = false
 
-    private lateinit var musicPlayerEventListener: MusicPlayerEventListener
+    private lateinit var audioPlayerEventListener: AudioPlayerEventListener
 
     companion object {
         var curSongDuration = 0L  // milliseconds
@@ -83,10 +83,10 @@ class MusicService : MediaBrowserServiceCompat() {
         sessionToken = mediaSession.sessionToken
 
         // Create the notification for player
-        musicNotificationManager = MusicNotificationManager(
+        audioNotificationManager = AudioNotificationManager(
             this,
             mediaSession.sessionToken,
-            MusicPlayerNotificationListener(this)
+            AudioPlayerNotificationListener(this)
         ) {
             // Called when the current audio track changes
             curSongDuration = exoPlayer.duration  // milliseconds
@@ -94,7 +94,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
 
         // set the track to play first
-        val musicPlaybackPreparer = MusicPlaybackPreparer(firebaseMusicSource) { audioTrack ->
+        val audioPlaybackPreparer = AudioPlaybackPreparer(firebaseMusicSource) { audioTrack ->
             // Called when the current audio track changes
             curPlayingAudioTrack = audioTrack
 
@@ -106,16 +106,16 @@ class MusicService : MediaBrowserServiceCompat() {
         }
 
         mediaSessionConnector = MediaSessionConnector(mediaSession)
-        mediaSessionConnector.setPlaybackPreparer(musicPlaybackPreparer)
+        mediaSessionConnector.setPlaybackPreparer(audioPlaybackPreparer)
         mediaSessionConnector.setQueueNavigator(MusicQueueNavigator())
         mediaSessionConnector.setPlayer(exoPlayer)
 
         // Listen to player state changes and errors
-        musicPlayerEventListener = MusicPlayerEventListener(this)
-        exoPlayer.addListener(musicPlayerEventListener)
+        audioPlayerEventListener = AudioPlayerEventListener(this)
+        exoPlayer.addListener(audioPlayerEventListener)
 
         // Show notification for control of the player
-        musicNotificationManager.showNotification(exoPlayer)
+        audioNotificationManager.showNotification(exoPlayer)
     }
 
     // Used to get media description for the an audio track (when track changes), also intercept to player events
@@ -157,7 +157,7 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onDestroy()
         serviceScope.cancel()
 
-        exoPlayer.removeListener(musicPlayerEventListener)
+        exoPlayer.removeListener(audioPlayerEventListener)
         exoPlayer.release()
     }
 

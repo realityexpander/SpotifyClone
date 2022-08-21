@@ -39,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun setupRecyclerView() = rvAllSongs.apply {
+    private fun setupRecyclerView() = rvAllAudioTracks.apply {
         adapter = audioTrackAdapter
         layoutManager = LinearLayoutManager(requireContext())
     }
