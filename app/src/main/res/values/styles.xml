@@ -23,7 +23,7 @@
     </style>
 
     <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="fontFamily">@font/sourcesanspro_regular</item>
         <item name="cornerRadius">25dp</item>
     </style>
 
