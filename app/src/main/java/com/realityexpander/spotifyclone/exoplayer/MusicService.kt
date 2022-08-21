@@ -174,8 +174,11 @@ class MusicService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>  // playable audio track or list of audio tracks
     ) {
+        // in more complex apps, you would have different parentId's for albums, artists, genres, playlists, etc.
         when (parentId) {
             MEDIA_ROOT_ID -> {
+
+                // Respond to the Loading of our audio tracks from the Firebase database
                 val resultsSent = firebaseMusicSource.whenReady { isTracksDownloaded ->
                     if (isTracksDownloaded) {
                         result.sendResult(firebaseMusicSource.asMediaItems())  // send the list of audio tracks

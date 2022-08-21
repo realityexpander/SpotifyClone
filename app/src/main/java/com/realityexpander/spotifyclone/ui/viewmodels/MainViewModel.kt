@@ -30,12 +30,14 @@ class MainViewModel @Inject constructor(
     init {
         _mediaItems.postValue(Resource.loading(null))
 
-        musicServiceConnection.subscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {
+        musicServiceConnection.subscribe(MEDIA_ROOT_ID, object: MediaBrowserCompat.SubscriptionCallback() {
+
             override fun onChildrenLoaded(
                 parentId: String,
                 children: MutableList<MediaBrowserCompat.MediaItem>
             ) {
                 super.onChildrenLoaded(parentId, children)
+
                 val items = children.map {
                     AudioTrack(
                         it.mediaId!!,

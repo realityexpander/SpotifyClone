@@ -23,11 +23,13 @@ object AppModule {
     @Provides
     fun provideMusicServiceConnection(
         @ApplicationContext context: Context
-    ): MusicServiceConnection = MusicServiceConnection(context)
+    ): MusicServiceConnection =
+        MusicServiceConnection(context)
 
     @Singleton
     @Provides
-    fun provideSwipeAudioTrackAdapter(): SwipeAudioTrackAdapter = SwipeAudioTrackAdapter()
+    fun provideSwipeAudioTrackAdapter(): SwipeAudioTrackAdapter =
+        SwipeAudioTrackAdapter()
 
     @Singleton
     @Provides

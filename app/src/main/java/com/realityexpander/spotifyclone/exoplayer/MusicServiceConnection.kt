@@ -37,23 +37,27 @@ class MusicServiceConnection(
 
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
 
-    private val mediaBrowser = MediaBrowserCompat(
-        context,
-        ComponentName(
+    private val mediaBrowser =
+        MediaBrowserCompat(
             context,
-            MusicService::class.java
-        ),
-        mediaBrowserConnectionCallback,
-        null
-    ).apply { connect() }
+            ComponentName(
+                context,
+                MusicService::class.java
+            ),
+            mediaBrowserConnectionCallback,
+            null
+        ).apply { connect() }
 
+    // Used to get access to the play controls (play, pause, skip to next, etc)
     val transportControls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls  // only accessible after mediaController is instantiated & connected
 
+    // Used to get access to our list of audio tracks (from firebase)
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.subscribe(parentId, callback)
     }
 
+    // Used to release access to our list of audio tracks (from firebase)
     fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.unsubscribe(parentId, callback)
     }
@@ -97,6 +101,7 @@ class MusicServiceConnection(
 
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
 
+        // Called when user starts/stops/(skips?) playing music
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             _playbackState.postValue(state)
         }
