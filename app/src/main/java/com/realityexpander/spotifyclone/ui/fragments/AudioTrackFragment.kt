@@ -38,6 +38,8 @@ class AudioTrackFragment : Fragment(R.layout.fragment_audio_track) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // This binds to the life cycle of the ACTIVITY
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         subscribeToObservers()
 

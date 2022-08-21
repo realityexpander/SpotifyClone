@@ -20,8 +20,8 @@ class AudioTrackViewModel @Inject constructor(
 
     private val playbackState = audioServiceConnection.playbackState
 
-    private val _curSongDuration = MutableLiveData<Long>()
-    val curAudioTrackDuration: LiveData<Long> = _curSongDuration
+    private val _curAudioTrackDuration = MutableLiveData<Long>()
+    val curAudioTrackDuration: LiveData<Long> = _curAudioTrackDuration
 
     private val _curPlayerPosition = MutableLiveData<Long>()
     val curPlayerPosition: LiveData<Long> = _curPlayerPosition
@@ -31,13 +31,17 @@ class AudioTrackViewModel @Inject constructor(
     }
 
     private fun updateCurrentPlayerPosition() {
+
+        // continuously update the current player position
         viewModelScope.launch {
             while(true) {
                 val pos = playbackState.value?.currentPlaybackPosition
+
                 if(curPlayerPosition.value != pos) {
                     _curPlayerPosition.postValue(pos)
-                    _curSongDuration.postValue(AudioService.curSongDuration)
+                    _curAudioTrackDuration.postValue(AudioService.curSongDuration)
                 }
+
                 delay(UPDATE_PLAYER_POSITION_INTERVAL)
             }
         }

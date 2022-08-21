@@ -22,7 +22,9 @@ class FirebaseMusicSource @Inject constructor(
     var audioTracks = emptyList<MediaMetadataCompat>()
 
     suspend fun fetchMediaData() = withContext(Dispatchers.IO) {
-        state = STATE_DOWNLOADING
+        withContext(Dispatchers.Main) {
+            state = STATE_DOWNLOADING
+        }
 
         // Get audioTracks from Firebase
         val (allAudioTracks, isSuccessful) = audioDatabase.getAllAudioTracks()
@@ -45,7 +47,10 @@ class FirebaseMusicSource @Inject constructor(
                 .putString(METADATA_KEY_DISPLAY_DESCRIPTION, audioTrack.subtitle)
                 .build()
         }
-        state = STATE_READY_TO_PLAY
+
+        withContext(Dispatchers.Main) {
+            state = STATE_READY_TO_PLAY
+        }
     }
 
     // Define From where to stream the audio track

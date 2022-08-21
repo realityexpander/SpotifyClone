@@ -18,8 +18,13 @@ inline val PlaybackStateCompat.isPlayEnabled
                 state == PlaybackStateCompat.STATE_PAUSED
             )
 
+// get the current playback position in milliseconds
 inline val PlaybackStateCompat.currentPlaybackPosition: Long
     get() = if(state == PlaybackStateCompat.STATE_PLAYING) {
+
+                // get the time at which the state was last updated.
+                // SystemClock.elapsedRealtime() is the time since phone was last booted.
+                // (Replicates restricted library function - getCurrentPosition())
                 val timeDelta = SystemClock.elapsedRealtime() - lastPositionUpdateTime
 
                 (position + (timeDelta * playbackSpeed)).toLong()

@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        // Show & Hide the bottom bar upon navigation
         navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.songFragment -> hideBottomBar()
