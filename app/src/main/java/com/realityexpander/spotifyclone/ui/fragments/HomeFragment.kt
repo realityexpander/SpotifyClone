@@ -18,23 +18,28 @@ import javax.inject.Inject
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     lateinit var mainViewModel: MainViewModel
+    // we don't use `val viewModel:MainViewModel by viewModels()` here because we want to
+    // bind the ViewModel to the ACTIVITY lifecycle, not the fragment.
 
     @Inject
-    lateinit var songAdapter: AudioTrackAdapter
+    lateinit var audioTrackAdapter: AudioTrackAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
+        // Not using the "by" delegate allows us to bind the viewModel to the lifecycle of the ACTIVITY (and not the fragment)
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java) // explicitly bind the viewModel to the ACTIVITY lifecycle
+
         setupRecyclerView()
         subscribeToObservers()
 
-        songAdapter.setItemClickListener {
+        audioTrackAdapter.setItemClickListener {
             mainViewModel.playOrToggleAudioTrack(it)
         }
     }
 
     private fun setupRecyclerView() = rvAllSongs.apply {
-        adapter = songAdapter
+        adapter = audioTrackAdapter
         layoutManager = LinearLayoutManager(requireContext())
     }
 
@@ -44,7 +49,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 Status.SUCCESS -> {
                     allSongsProgressBar.isVisible = false
                     result.payload?.let { audioTracks ->
-                        songAdapter.audioTracks = audioTracks
+                        audioTrackAdapter.audioTracks = audioTracks
                     }
                 }
                 Status.ERROR -> Unit

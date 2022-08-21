@@ -23,6 +23,7 @@ class MainViewModel @Inject constructor(
     private val _audioTracks = MutableLiveData<Resource<List<AudioTrack>>>()
     val audioTracks: LiveData<Resource<List<AudioTrack>>> = _audioTracks
 
+    // Make local shortcuts for easier readability
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
     val curPlayingAudioTrack = musicServiceConnection.curPlayingSong
@@ -70,12 +71,15 @@ class MainViewModel @Inject constructor(
         musicServiceConnection.transportControls.seekTo(pos)
     }
 
+    // Start playing if not playing, and toggle if playing/paused
     fun playOrToggleAudioTrack(audioTrack: AudioTrack, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
 
         if (isPrepared && audioTrack.mediaId ==
             curPlayingAudioTrack.value?.getString(METADATA_KEY_MEDIA_ID)
         ) {
+            // play/pause the current audio track
+
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()
@@ -84,6 +88,7 @@ class MainViewModel @Inject constructor(
                 }
             }
         } else {
+            // Play a new audio track
             musicServiceConnection.transportControls.playFromMediaId(audioTrack.mediaId, null)
         }
     }
