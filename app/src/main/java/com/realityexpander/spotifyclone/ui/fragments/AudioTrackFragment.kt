@@ -84,6 +84,7 @@ class AudioTrackFragment : Fragment(R.layout.fragment_audio_track) {
     }
 
     private fun subscribeToObservers() {
+
         mainViewModel.audioTracks.observe(viewLifecycleOwner) {
             it?.let { result ->
                 when(result.status) {
@@ -99,13 +100,17 @@ class AudioTrackFragment : Fragment(R.layout.fragment_audio_track) {
                 }
             }
         }
+
         mainViewModel.curPlayingAudioTrack.observe(viewLifecycleOwner) {
             if(it == null) return@observe
+
             curPlayingAudioTrack = it.toAudioTrack()
             updateTitleAndSongImage(curPlayingAudioTrack!!)
         }
+
         mainViewModel.playbackState.observe(viewLifecycleOwner) {
             playbackState = it
+
             ivPlayPauseDetail.setImageResource(
                 if(playbackState?.isPlaying == true)
                     R.drawable.ic_pause
@@ -114,12 +119,14 @@ class AudioTrackFragment : Fragment(R.layout.fragment_audio_track) {
             )
             seekBar.progress = it?.position?.toInt() ?: 0
         }
+
         audioTrackViewModel.curPlayerPosition.observe(viewLifecycleOwner) {
             if(shouldUpdateSeekbar) {
                 seekBar.progress = it.toInt()
                 setCurPlayerTimeToTextView(it)
             }
         }
+
         audioTrackViewModel.curAudioTrackDuration.observe(viewLifecycleOwner) {
             seekBar.max = it.toInt()
             val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
