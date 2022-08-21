@@ -1,4 +1,4 @@
-package com.realityexpander.spotifyclone.other
+package com.realityexpander.spotifyclone.common
 
 open class Event<out T>(private val data: T) {
 
@@ -10,6 +10,7 @@ open class Event<out T>(private val data: T) {
             null
         } else {
             hasBeenHandled = true
+
             data
         }
     }

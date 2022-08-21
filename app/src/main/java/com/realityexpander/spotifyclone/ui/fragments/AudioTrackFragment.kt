@@ -12,7 +12,7 @@ import com.realityexpander.spotifyclone.R
 import com.realityexpander.spotifyclone.data.entities.AudioTrack
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
 import com.realityexpander.spotifyclone.exoplayer.toAudioTrack
-import com.realityexpander.spotifyclone.other.Status.SUCCESS
+import com.realityexpander.spotifyclone.common.Status.SUCCESS
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
 import com.realityexpander.spotifyclone.ui.viewmodels.AudioTrackViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,7 +86,7 @@ class AudioTrackFragment : Fragment(R.layout.fragment_song) {
             it?.let { result ->
                 when(result.status) {
                     SUCCESS -> {
-                        result.data?.let { audioTracks ->
+                        result.payload?.let { audioTracks ->
                             if(curPlayingAudioTrack == null && audioTracks.isNotEmpty()) {
                                 curPlayingAudioTrack = audioTracks[0]
                                 updateTitleAndSongImage(audioTracks[0])

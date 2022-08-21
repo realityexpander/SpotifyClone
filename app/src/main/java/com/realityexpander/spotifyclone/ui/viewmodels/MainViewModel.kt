@@ -10,8 +10,8 @@ import com.realityexpander.spotifyclone.exoplayer.MusicServiceConnection
 import com.realityexpander.spotifyclone.exoplayer.isPlayEnabled
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
 import com.realityexpander.spotifyclone.exoplayer.isPrepared
-import com.realityexpander.spotifyclone.other.Constants.MEDIA_ROOT_ID
-import com.realityexpander.spotifyclone.other.Resource
+import com.realityexpander.spotifyclone.common.Constants.MEDIA_ROOT_ID
+import com.realityexpander.spotifyclone.common.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

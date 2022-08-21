@@ -1,4 +1,4 @@
-package com.realityexpander.spotifyclone.other
+package com.realityexpander.spotifyclone.common
 
 object Constants {
 

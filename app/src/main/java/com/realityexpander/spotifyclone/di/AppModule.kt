@@ -2,6 +2,7 @@ package com.realityexpander.spotifyclone.di
 
 import android.content.Context
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.realityexpander.spotifyclone.R
@@ -22,17 +23,17 @@ object AppModule {
     @Provides
     fun provideMusicServiceConnection(
         @ApplicationContext context: Context
-    ) = MusicServiceConnection(context)
+    ): MusicServiceConnection = MusicServiceConnection(context)
 
     @Singleton
     @Provides
-    fun provideSwipeAudioTrackAdapter() = SwipeAudioTrackAdapter()
+    fun provideSwipeAudioTrackAdapter(): SwipeAudioTrackAdapter = SwipeAudioTrackAdapter()
 
     @Singleton
     @Provides
     fun provideGlideInstance(
         @ApplicationContext context: Context
-    ) =
+    ): RequestManager =
         Glide
             .with(context)
             .setDefaultRequestOptions(

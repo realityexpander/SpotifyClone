@@ -2,7 +2,7 @@ package com.realityexpander.spotifyclone.data.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.realityexpander.spotifyclone.data.entities.AudioTrack
-import com.realityexpander.spotifyclone.other.Constants.AUDIO_TRACK_COLLECTION
+import com.realityexpander.spotifyclone.common.Constants.AUDIO_TRACK_COLLECTION
 import kotlinx.coroutines.tasks.await
 
 class MusicDatabase {

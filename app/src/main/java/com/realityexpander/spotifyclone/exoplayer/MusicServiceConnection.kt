@@ -10,13 +10,16 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.realityexpander.spotifyclone.other.Constants.NETWORK_ERROR
-import com.realityexpander.spotifyclone.other.Event
-import com.realityexpander.spotifyclone.other.Resource
+import com.realityexpander.spotifyclone.common.Constants.NETWORK_ERROR
+import com.realityexpander.spotifyclone.common.Event
+import com.realityexpander.spotifyclone.common.Resource
 
+// Sits between fragment/activity and the MusicService
 class MusicServiceConnection(
     context: Context
 ) {
+
+    // is connected to the MusicService
     private val _isConnected = MutableLiveData<Event<Resource<Boolean>>>()
     val isConnected: LiveData<Event<Resource<Boolean>>> = _isConnected
 
@@ -28,7 +31,8 @@ class MusicServiceConnection(
 
     private val _curPlayingSong = MutableLiveData<MediaMetadataCompat?>()
     val curPlayingSong: LiveData<MediaMetadataCompat?> = _curPlayingSong
-    
+
+    // For access to playback transport controls and callbacks
     lateinit var mediaController: MediaControllerCompat
 
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
@@ -44,7 +48,7 @@ class MusicServiceConnection(
     ).apply { connect() }
 
     val transportControls: MediaControllerCompat.TransportControls
-        get() = mediaController.transportControls
+        get() = mediaController.transportControls  // only accessible after mediaController is instantiated & connected
 
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.subscribe(parentId, callback)
@@ -54,18 +58,21 @@ class MusicServiceConnection(
         mediaBrowser.unsubscribe(parentId, callback)
     }
 
+    // Connect to the MediaBrowser & get reference to the MediaController
     private inner class MediaBrowserConnectionCallback(
         private val context: Context
     ) : MediaBrowserCompat.ConnectionCallback() {
 
         override fun onConnected() {
             Log.d("MusicServiceConnection", "CONNECTED")
+
             mediaController = MediaControllerCompat(
                 context,
                 mediaBrowser.sessionToken
             ).apply {
                 registerCallback(MediaControllerCallback())
             }
+
             _isConnected.postValue(Event(Resource.success(true)))
         }
 
@@ -73,7 +80,8 @@ class MusicServiceConnection(
             Log.d("MusicServiceConnection", "SUSPENDED")
 
             _isConnected.postValue(Event(Resource.error(
-                "The connection was suspended", false
+                "The connection was suspended",
+                false
             )))
         }
 
@@ -81,7 +89,8 @@ class MusicServiceConnection(
             Log.d("MusicServiceConnection", "FAILED")
 
             _isConnected.postValue(Event(Resource.error(
-                "Couldn't connect to media browser", false
+                "Couldn't connect to media browser",
+                false
             )))
         }
     }
@@ -92,12 +101,15 @@ class MusicServiceConnection(
             _playbackState.postValue(state)
         }
 
+        // When a new track is ready to be played, this callback is called to update the title/artist/album art etc
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             _curPlayingSong.postValue(metadata)
         }
 
+        // Detect errors and possibly other events from the mediaSession from the MediaController
         override fun onSessionEvent(event: String?, extras: Bundle?) {
             super.onSessionEvent(event, extras)
+
             when(event) {
                 NETWORK_ERROR -> _networkError.postValue(
                     Event(

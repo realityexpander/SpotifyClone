@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.realityexpander.spotifyclone.R
 import com.realityexpander.spotifyclone.adapters.AudioTrackAdapter
-import com.realityexpander.spotifyclone.other.Status
+import com.realityexpander.spotifyclone.common.Status
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -43,7 +43,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             when(result.status) {
                 Status.SUCCESS -> {
                     allSongsProgressBar.isVisible = false
-                    result.data?.let { audioTracks ->
+                    result.payload?.let { audioTracks ->
                         songAdapter.audioTracks = audioTracks
                     }
                 }

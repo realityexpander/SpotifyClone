@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.realityexpander.spotifyclone.exoplayer.MusicService
-import com.realityexpander.spotifyclone.other.Constants.NOTIFICATION_ID
+import com.realityexpander.spotifyclone.common.Constants.NOTIFICATION_ID
 
 class MusicPlayerNotificationListener(
     private val musicService: MusicService

@@ -14,7 +14,7 @@ import com.realityexpander.spotifyclone.adapters.SwipeAudioTrackAdapter
 import com.realityexpander.spotifyclone.data.entities.AudioTrack
 import com.realityexpander.spotifyclone.exoplayer.isPlaying
 import com.realityexpander.spotifyclone.exoplayer.toAudioTrack
-import com.realityexpander.spotifyclone.other.Status.*
+import com.realityexpander.spotifyclone.common.Status.*
 import com.realityexpander.spotifyclone.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             it?.let { result ->
                 when (result.status) {
                     SUCCESS -> {
-                        result.data?.let { audioTracks ->
+                        result.payload?.let { audioTracks ->
                             swipeAudioTrackAdapter.audioTracks = audioTracks
                             if (audioTracks.isNotEmpty()) {
                                 glide.load((curPlayingAudioTrack ?: audioTracks[0]).imageUrl)

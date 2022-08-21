@@ -16,8 +16,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.realityexpander.spotifyclone.exoplayer.callbacks.MusicPlaybackPreparer
 import com.realityexpander.spotifyclone.exoplayer.callbacks.MusicPlayerEventListener
 import com.realityexpander.spotifyclone.exoplayer.callbacks.MusicPlayerNotificationListener
-import com.realityexpander.spotifyclone.other.Constants.MEDIA_ROOT_ID
-import com.realityexpander.spotifyclone.other.Constants.NETWORK_ERROR
+import com.realityexpander.spotifyclone.common.Constants.MEDIA_ROOT_ID
+import com.realityexpander.spotifyclone.common.Constants.NETWORK_ERROR
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
