@@ -8,6 +8,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -89,7 +90,9 @@ class AudioService : MediaBrowserServiceCompat() {
             AudioPlayerNotificationListener(this)
         ) {
             // Called when the current audio track changes
-            curSongDuration = exoPlayer.duration  // milliseconds
+            if(exoPlayer.duration != C.TIME_UNSET) {  // check if its not set yet (HACKY from Google!!)
+                curSongDuration = exoPlayer.duration  // milliseconds
+            }
         }
 
 
