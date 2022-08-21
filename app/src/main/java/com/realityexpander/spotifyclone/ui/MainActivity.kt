@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 super.onPageSelected(position)
 
                 if(playbackState?.isPlaying == true) {
-                    mainViewModel.playOrToggleSong(swipeAudioTrackAdapter.audioTracks[position])
+                    mainViewModel.playOrToggleAudioTrack(swipeAudioTrackAdapter.audioTracks[position])
                 } else {
                     curPlayingAudioTrack = swipeAudioTrackAdapter.audioTracks[position]
                 }
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         ivPlayPause.setOnClickListener {
             curPlayingAudioTrack?.let {
-                mainViewModel.playOrToggleSong(it, true)
+                mainViewModel.playOrToggleAudioTrack(it, true)
             }
         }
 
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeToObservers() {
-        mainViewModel.mediaItems.observe(this) {
+        mainViewModel.audioTracks.observe(this) {
             it?.let { result ->
                 when (result.status) {
                     SUCCESS -> {

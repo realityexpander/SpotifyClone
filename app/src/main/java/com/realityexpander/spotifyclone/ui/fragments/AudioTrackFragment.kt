@@ -43,7 +43,7 @@ class AudioTrackFragment : Fragment(R.layout.fragment_song) {
 
         ivPlayPauseDetail.setOnClickListener {
             curPlayingAudioTrack?.let {
-                mainViewModel.playOrToggleSong(it, true)
+                mainViewModel.playOrToggleAudioTrack(it, true)
             }
         }
 
@@ -67,11 +67,11 @@ class AudioTrackFragment : Fragment(R.layout.fragment_song) {
         })
 
         ivSkipPrevious.setOnClickListener {
-            mainViewModel.skipToPreviousSong()
+            mainViewModel.skipToPreviousAudioTrack()
         }
 
         ivSkip.setOnClickListener {
-            mainViewModel.skipToNextSong()
+            mainViewModel.skipToNextAudioTrack()
         }
     }
 
@@ -82,7 +82,7 @@ class AudioTrackFragment : Fragment(R.layout.fragment_song) {
     }
 
     private fun subscribeToObservers() {
-        mainViewModel.mediaItems.observe(viewLifecycleOwner) {
+        mainViewModel.audioTracks.observe(viewLifecycleOwner) {
             it?.let { result ->
                 when(result.status) {
                     SUCCESS -> {

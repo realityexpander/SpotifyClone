@@ -29,7 +29,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         subscribeToObservers()
 
         songAdapter.setItemClickListener {
-            mainViewModel.playOrToggleSong(it)
+            mainViewModel.playOrToggleAudioTrack(it)
         }
     }
 
@@ -39,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun subscribeToObservers() {
-        mainViewModel.mediaItems.observe(viewLifecycleOwner) { result ->
+        mainViewModel.audioTracks.observe(viewLifecycleOwner) { result ->
             when(result.status) {
                 Status.SUCCESS -> {
                     allSongsProgressBar.isVisible = false

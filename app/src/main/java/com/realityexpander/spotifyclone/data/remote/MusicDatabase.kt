@@ -10,7 +10,8 @@ class MusicDatabase {
     private val firestore = FirebaseFirestore.getInstance()
     private val audioTrackCollection = firestore.collection(AUDIO_TRACK_COLLECTION)
 
-    suspend fun getAllAudioTracks(): Pair<List<AudioTrack>, Boolean> {  // Pair<List<AudioTrack>, isSuccessful>
+    // returns Pair<List<AudioTrack>, isSuccessful>
+    suspend fun getAllAudioTracks(): Pair<List<AudioTrack>, Boolean> {
         return try {
             Pair(audioTrackCollection
                     .get()
