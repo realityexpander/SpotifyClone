@@ -18,7 +18,9 @@ class AudioTrackAdapter @Inject constructor(
         holder.itemView.apply {
             tvPrimary.text = audioTrack.title
             tvSecondary.text = audioTrack.subtitle
-            glide.load(audioTrack.imageUrl).into(ivItemImage)
+            glide
+                .load(audioTrack.imageUrl)
+                .into(ivItemImage)
 
             setOnClickListener {
                 onItemClickListener?.let { click ->

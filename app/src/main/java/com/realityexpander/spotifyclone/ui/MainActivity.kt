@@ -95,19 +95,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun switchViewPagerToCurrentSong(audioTrack: AudioTrack) {
         val newItemIndex = swipeAudioTrackAdapter.audioTracks.indexOf(audioTrack)
-        if (newItemIndex != -1) {
+
+        if (newItemIndex != -1) { // -1 == not found
             vpSong.currentItem = newItemIndex
             curPlayingAudioTrack = audioTrack
         }
     }
 
     private fun subscribeToObservers() {
+
+        // receive the list of audio tracks from the view model (from firebase)
         mainViewModel.audioTracks.observe(this) {
             it?.let { result ->
                 when (result.status) {
                     SUCCESS -> {
                         result.payload?.let { audioTracks ->
+                            // load the adapter with the audio tracks
                             swipeAudioTrackAdapter.audioTracks = audioTracks
+
+                            // Display the album art for the first song in the list
                             if (audioTracks.isNotEmpty()) {
                                 glide.load((curPlayingAudioTrack ?: audioTracks[0]).imageUrl)
                                     .into(ivCurSongImage)
