@@ -33,8 +33,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setupRecyclerView()
         subscribeToObservers()
 
-        audioTrackAdapter.setItemClickListener {
-            mainViewModel.playOrToggleAudioTrack(it)
+        // Click on a track to play it
+        audioTrackAdapter.setItemClickListener { audioTrack ->
+            mainViewModel.playOrToggleAudioTrack(audioTrack)
         }
     }
 
