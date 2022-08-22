@@ -108,10 +108,11 @@ class AudioService : MediaBrowserServiceCompat() {
             )
         }
 
-        mediaSessionConnector = MediaSessionConnector(mediaSession)
-        mediaSessionConnector.setPlaybackPreparer(audioPlaybackPreparer)
-        mediaSessionConnector.setQueueNavigator(MusicQueueNavigator())
-        mediaSessionConnector.setPlayer(exoPlayer)
+        mediaSessionConnector = MediaSessionConnector(mediaSession).apply {
+            setPlaybackPreparer(audioPlaybackPreparer)
+            setQueueNavigator(MusicQueueNavigator())
+            setPlayer(exoPlayer)
+        }
 
         // Listen to player state changes and errors
         audioPlayerEventListener = AudioPlayerEventListener(this)
