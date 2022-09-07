@@ -7,14 +7,18 @@ Spotify Clone using Kotlin, Firebase, Firestore, Coroutines, Services
 - Kotlin
 - Hilt
 - Fragments
+- Coroutines
 - Firebase backend with FireStore
-- Exoplayer Api
+- Exoplayer Library
 - Custom foreground music player controls
+- Glide image loading
+- Retrofit networking
+- Navigation component
 
 To install the Apk:
 
 1. Open this link on your Android device:
-   https://github.com/realityexpander/calorieTrack/blob/master/bikingtrack_1.0.apk
+   https://github.com/realityexpander/calorieTrack/blob/master/spotifyclone_1.0.apk
 2. Tap the "skewer" menu and tap the "download"
 
    [![](https://user-images.githubusercontent.com/5157474/147434050-57102a30-af32-46ed-a90b-d94e0c4a4f35.jpg)]()
