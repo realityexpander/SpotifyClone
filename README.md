@@ -1,9 +1,9 @@
 # SpotifyClone
 Spotify Clone using Kotlin, Firebase, Firestore, Coroutines, Services
 
-[<img src="https://user-images.githubusercontent.com/5157474/188968514-58fa4ac2-ff4d-401b-ad87-22dcb9f9b93d.png" width="200"/>](https://user-images.githubusercontent.com/5157474/188968514-58fa4ac2-ff4d-401b-ad87-22dcb9f9b93d.png)
-[<img src="https://user-images.githubusercontent.com/5157474/188968574-2ecc5a83-963d-459d-b2b4-007453c7ed29.png" width="200"/>](https://user-images.githubusercontent.com/5157474/188968574-2ecc5a83-963d-459d-b2b4-007453c7ed29.png)
-[<img src="https://user-images.githubusercontent.com/5157474/188968606-dd45d9b9-63bc-41b0-8d80-9101f17ec451.png" width="200"/>](https://user-images.githubusercontent.com/5157474/188968606-dd45d9b9-63bc-41b0-8d80-9101f17ec451.png)
+[<img src="https://user-images.githubusercontent.com/5157474/188968514-58fa4ac2-ff4d-401b-ad87-22dcb9f9b93d.png" width="250"/>](https://user-images.githubusercontent.com/5157474/188968514-58fa4ac2-ff4d-401b-ad87-22dcb9f9b93d.png)
+[<img src="https://user-images.githubusercontent.com/5157474/188968574-2ecc5a83-963d-459d-b2b4-007453c7ed29.png" width="250"/>](https://user-images.githubusercontent.com/5157474/188968574-2ecc5a83-963d-459d-b2b4-007453c7ed29.png)
+[<img src="https://user-images.githubusercontent.com/5157474/188968606-dd45d9b9-63bc-41b0-8d80-9101f17ec451.png" width="250"/>](https://user-images.githubusercontent.com/5157474/188968606-dd45d9b9-63bc-41b0-8d80-9101f17ec451.png)
 
 
 ## Tech used
